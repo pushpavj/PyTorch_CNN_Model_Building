@@ -291,30 +291,43 @@ with torch.no_grad():   # this means that we don't want to calculate the gradien
                                                             # 
                                                             # 
 confsion_matrix=confusion_matrix(target,pred)
-print(confsion_matrix)
+print(confsion_matrix) 
 plt.figure(figsize=(12,14))
 sns.heatmap(confsion_matrix,annot=True,fmt="d",xticklabels=label_map.values(),
               yticklabels=label_map.values(),cbar=False)
 
 plt.show()
 
+# In the confusion matrix we cans see that how the model is abel to classify each class and 
+# also can see that how the model is getting confused with other classes. From this example
+# we can uderstand that the model is getting confusion for Shirt class is being confused with
+# T shirt and coat class. Pull over class is confused with t shirt and coat. The ankle class
+# is the one which has less confusion and the model is able to predict it pretty well.
 
 #Predicting the model
 
-data=next(iter(test_loader))
-print(data)
-len(data)
-images,labels=data
+data=next(iter(test_loader)) #data gets the one batch of data from the test data loader
+                             # i.e. set of 32 image data along with their corresponding labels
+
+print("data",data)
+print("len of data ", len(data)) 
+images,labels=data #images and labels are the inputs to the model. 
+                    # i.e. inputs and target data
+
+print("images",images) #images contains the 32 image data   
+print("labels",labels) # labels contains the target data for the 32 image data
 
 print("images.shape",images.shape)
 
 idx=2
-img=images[idx]
+img=images[idx] #taking the 2nd image from the data set
+
 label=labels[idx]
-label_map[label.item()]
+label_map[label.item()] #getting the name of the label class for the 2nd image
+
 
 print("img.shape",img.shape)
-plt.imshow(img.squeeze())
+plt.imshow(img.squeeze()) #printing the 2nd image
 plt.show()
 
 #pass this image to the model and get the prediction
@@ -323,14 +336,20 @@ logit=model(img.unsqueeze(0).to(config.DEVICE)) #model is on cuda so we need to 
 print("logit",logit) # the above gives us a prediction is terms of array of data. so we 
  # need to use softmax to understand what is the predicted image.
 
-predicted_probability=F.softmax(logit,dim=1)
+predicted_probability=F.softmax(logit,dim=1) #the softmax function is used to get the 
+                                            #probability of the predicted image.
 
-print("predicted_probability",sum(predicted_probability))
+
+print("predicted_probability",sum(predicted_probability)) 
 
 
-argmax=torch.argmax(predicted_probability,dim=1)
+argmax=torch.argmax(predicted_probability,dim=1) #argmax is used to get the index of the
+                                                # predicted image.
 
-print("Predicted image is ",label_map[argmax.item()])
+
+print("Predicted image is ",label_map[argmax.item()])#getting the name of the label class
+                                                    # for the predicted image.
+
 
 
 #Let us create a function to create the prediction
